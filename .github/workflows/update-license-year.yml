@@ -11,10 +11,18 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
       - name: Update year in LICENSE
         run: |
@@ -41,6 +49,7 @@ jobs:
             cat LICENSE
           else
             echo "LICENSE file not found!"
+            exit 1
           fi
           
       - name: Check for changes
@@ -68,5 +77,5 @@ jobs:
             
             Please review the changes and merge if appropriate.
           branch: update-license-year
-          base: main
+          base: master  # 修改为master，因为你的默认分支是master
           delete-branch: true
